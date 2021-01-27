@@ -26,7 +26,7 @@ const HEIGHT: u32 = 600;
 const PLAYER_WIDTH: u32 = 20;
 const PLAYER_HEIGHT: u32 = 100;
 const PLAYER_OFFSET: u32 = 20;
-const MAX_PLAYER_VELOCITY: f32 = 2.0;
+const MAX_PLAYER_VELOCITY: f32 = 5.0;
 const MAX_BALL_VELOCITY: u32 = 10;
 
 fn clamp_player_velocity(velocity: (f32, f32)) -> (f32, f32) {

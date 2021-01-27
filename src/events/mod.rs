@@ -42,8 +42,11 @@ impl EventLoop {
             engine.handle_key_events(emit_key_events(&input));
     
             // call the engines update function, once per loop
-            engine.update();
-            })
+            if let Event::MainEventsCleared = event {
+                engine.update();
+            }
+
+        })
     }
 }
 
