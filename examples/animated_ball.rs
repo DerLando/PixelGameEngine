@@ -1,5 +1,5 @@
 use engine::PixelGameEngineBuilder;
-use pixel_game_engine::{buffer::Buffer, color::DefaultColors, draw::Drawable, engine, events::{EventLoop, KeyEvent}, pixel::Pixel};
+use pixel_game_engine::{buffer::Buffer, color::DefaultColors, draw::Drawable, engine, events::{EventLoop, KeyEvent}, pixel::Pixel, text::Text};
 use winit::event::VirtualKeyCode;
 
 struct State {
@@ -61,7 +61,7 @@ fn is_point_win(ball_position: &Pixel) -> Option<PointWin> {
 }
 
 fn is_player_at_boundary(player: &Player) -> bool {
-    if (player.position.y() + PLAYER_HEIGHT >= HEIGHT) {true}
+    if player.position.y() + PLAYER_HEIGHT >= HEIGHT {true}
     else {false}
 }
 
@@ -140,6 +140,10 @@ fn main() -> ! {
 
         // draw the left player
         b.draw_rectangle(DefaultColors::White.as_color(), s.player_right.position, PLAYER_WIDTH, PLAYER_HEIGHT, false);
+
+        // draw the score
+        let score = format!("{} : {}", s.player_left.score, s.player_right.score);
+        b.draw_text(DefaultColors::White.as_color(), (WIDTH / 2 - 50, 2).into(), 50, &score);
     };
 
     // key handlers

@@ -1,7 +1,7 @@
 use pixels::Pixels;
 use winit::window::Window;
 
-use crate::{color::Color, draw::Drawable, pixel::Pixel, primitives::{Circle, FilledCircle, HollowCircle, Line, Rectangle, HollowRectangle, FilledRectangle}};
+use crate::{color::Color, draw::Drawable, pixel::Pixel, primitives::{Circle, FilledCircle, HollowCircle, Line, Rectangle, HollowRectangle, FilledRectangle}, text::Text};
 
 pub struct Buffer {
     window: Window,
@@ -84,5 +84,9 @@ impl Buffer {
         } else {
             self.draw(color, FilledRectangle(Rectangle{top_left, width, height}))
         }
+    }
+
+    pub fn draw_text(&mut self, color: Color, top_left: Pixel, height: u32, text: &str) {
+        self.draw(color, Text{position: top_left, content: text, height})
     }
 }

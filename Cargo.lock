@@ -1059,6 +1059,7 @@ dependencies = [
  "env_logger",
  "log",
  "pixels",
+ "rusttype",
  "winit",
  "winit_input_helper",
 ]
