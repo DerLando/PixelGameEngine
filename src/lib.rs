@@ -7,4 +7,5 @@ pub mod buffer;
 pub mod draw;
 pub mod primitives;
 pub mod pixel;
+pub mod events;
 

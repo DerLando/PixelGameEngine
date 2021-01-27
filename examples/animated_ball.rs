@@ -1,7 +1,5 @@
 use engine::PixelGameEngineBuilder;
-use pixel_game_engine::{buffer::Buffer, color::DefaultColors, engine, pixel::Pixel};
-use winit::{event::{Event, VirtualKeyCode}, event_loop::{ControlFlow, EventLoop}};
-use winit_input_helper::WinitInputHelper;
+use pixel_game_engine::{buffer::Buffer, color::DefaultColors, engine, events::EventLoop, pixel::Pixel};
 
 struct State {
     pub position: Pixel,
@@ -10,11 +8,7 @@ struct State {
 
 const RADIUS: u32 = 10;
 
-fn main() {
-    // create event_loop and input helper
-    let event_loop = EventLoop::new();
-    let mut input = WinitInputHelper::new();
-
+fn main() -> ! {
     // engine state, we will be animating a simple moving ball
     let state = State {
         position: Pixel((100, 400)),
@@ -48,31 +42,10 @@ fn main() {
     };
     
     // create engine
-    let mut engine =
+    let builder =
     PixelGameEngineBuilder::new(state)
         .with_update(update)
-        .with_draw(draw)
-        .build(&event_loop);
+        .with_draw(draw);
 
-    println!("Created engine!");
-
-    engine.draw_frame();
-
-    event_loop.run(move |event, _, control_flow| {
-        if let Event::RedrawRequested(_) = event {
-            engine.draw_frame();
-        }
-
-        // Handle input events
-        if input.update(&event) {
-            // Close events
-            if input.key_pressed(VirtualKeyCode::Escape) || input.quit() {
-                *control_flow = ControlFlow::Exit;
-                return;
-            }
-        }
-
-        engine.update();
-
-    });
+    EventLoop::build_and_run(builder)
 }

@@ -1,14 +1,12 @@
-use std::{collections::binary_heap::Iter, convert::TryInto, marker::PhantomData, time::Instant};
-
-use log::error;
-use pixels::{Error, Pixels, PixelsContext, SurfaceTexture};
-use winit::{dpi::LogicalSize, window::Window};
+use pixels::{Pixels, SurfaceTexture};
+use winit::{dpi::LogicalSize};
 use winit::event::{Event, VirtualKeyCode};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
 use winit_input_helper::WinitInputHelper;
 
-use crate::{pixel::Pixel, buffer::Buffer, color::{Color, DefaultColors}};
+use crate::{buffer::Buffer};
+
 
 pub struct PixelGameEngineBuilder<T>
 where T: Sized
@@ -53,7 +51,7 @@ where T: Sized
         self
     }
 
-    pub fn build(self, event_loop: &EventLoop<()>) -> PixelGameEngine<T> {
+    pub(crate) fn build(self, event_loop: &EventLoop<()>) -> PixelGameEngine<T> {
         PixelGameEngine::new(self.state, self.width, self.height, self.update_fn, self.draw_fn, event_loop)
     }
 }
@@ -63,7 +61,7 @@ where
 T: Sized,
 {
     state: T,
-    buffer: Buffer,
+    pub(crate) buffer: Buffer,
     update_fn: Box<dyn FnMut(&mut T) -> ()>,
     draw_fn: Box<dyn FnMut(&mut Buffer, &T) -> ()>,
 }
@@ -75,7 +73,7 @@ where T: Sized {
         width: u32, 
         height: u32, 
         update_fn: Box<dyn FnMut(&mut T) -> ()>, 
-        draw_fn: Box<dyn FnMut(&mut Buffer, &T) -> ()>, 
+        draw_fn: Box<dyn FnMut(&mut Buffer, &T) -> ()>,
         event_loop: &EventLoop<()>
     ) -> Self {
         // initialize logger
@@ -88,7 +86,7 @@ where T: Sized {
                 .with_title("Hello PixelGameEngine")
                 .with_inner_size(size)
                 .with_min_inner_size(size)
-                .build(&event_loop)
+                .build(event_loop)
                 .unwrap()
         };
 
@@ -104,7 +102,7 @@ where T: Sized {
             state,
             buffer: Buffer::new(window, pixels),
             update_fn,
-            draw_fn
+            draw_fn,
         }
     }
 
