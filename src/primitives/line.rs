@@ -17,3 +17,37 @@ impl Drawable for Line {
             .into_iter()
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test] fn vertical_line() {
+        // Arrange
+        let line = Line{from: (10, 10).into(), to: (10, 15).into()};
+
+        let expected: Vec<Pixel> = vec![
+            (10, 10).into(),
+            (10, 11).into(),
+            (10, 12).into(),
+            (10, 13).into(),
+            (10, 14).into(),
+            (10, 15).into(),
+        ];
+
+        expected.into_iter().zip(line.pixels().into_iter()).for_each(|(e, a)| assert_eq!(e, a));
+
+        let line = Line{from: (10, 500).into(), to: (10, 495).into()};
+
+        let expected: Vec<Pixel> = vec![
+            (10, 500).into(),
+            (10, 499).into(),
+            (10, 498).into(),
+            (10, 497).into(),
+            (10, 496).into(),
+            (10, 495).into(),
+        ];
+
+        expected.into_iter().zip(line.pixels().into_iter()).for_each(|(e, a)| assert_eq!(e, a))
+    }
+}

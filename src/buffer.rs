@@ -1,7 +1,7 @@
 use pixels::Pixels;
 use winit::window::Window;
 
-use crate::{color::Color, draw::Drawable, pixel::Pixel, primitives::{Circle, HollowCircle, FilledCircle, Line}};
+use crate::{color::Color, draw::Drawable, pixel::Pixel, primitives::{Circle, FilledCircle, HollowCircle, Line, Rectangle, HollowRectangle, FilledRectangle}};
 
 pub struct Buffer {
     window: Window,
@@ -76,5 +76,13 @@ impl Buffer {
 
     pub fn draw_line(&mut self, color: Color, start: Pixel, end: Pixel) {
         self.draw(color, Line{from: start, to: end})
+    }
+
+    pub fn draw_rectangle(&mut self, color: Color, top_left: Pixel, width: u32, height: u32, filled: bool) {
+        if !filled {
+            self.draw(color, HollowRectangle(Rectangle{top_left, width, height}))
+        } else {
+            self.draw(color, FilledRectangle(Rectangle{top_left, width, height}))
+        }
     }
 }

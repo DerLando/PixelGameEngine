@@ -1,7 +1,7 @@
 use std::ops::{Add, Sub};
 
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Pixel(pub(u32, u32));
 
 impl Pixel {

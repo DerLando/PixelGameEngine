@@ -53,6 +53,10 @@ fn iter_key_codes() -> impl Iterator<Item = VirtualKeyCode> {
         VirtualKeyCode::A,
         VirtualKeyCode::S,
         VirtualKeyCode::D,
+        VirtualKeyCode::Up,
+        VirtualKeyCode::Down,
+        VirtualKeyCode::Right,
+        VirtualKeyCode::Left,
     ].into_iter()
 }
 
