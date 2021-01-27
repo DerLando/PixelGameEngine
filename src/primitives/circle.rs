@@ -1,4 +1,4 @@
-use crate::{draw::Drawable, pixel::{self, Pixel}};
+use crate::{draw::Drawable, pixel::{Pixel}};
 
 pub(crate) struct Circle {
     pub center: Pixel,

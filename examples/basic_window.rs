@@ -12,6 +12,7 @@ fn main() {
     let draw = |b: &mut Buffer, s: &u8| {
         b.clear([((*s as f32 / 255.0).sin() * *s as f32) as u8, 0, *s, 255]);
         b.draw_circle(DefaultColors::White.as_color(), (400, 300).into(), 50, false);
+        b.draw_line(DefaultColors::White.as_color(), (100, 100).into(), (400, 400).into());
     };
     
     // create engine

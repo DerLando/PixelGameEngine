@@ -1,7 +1,7 @@
 use pixels::Pixels;
 use winit::window::Window;
 
-use crate::{color::Color, draw::Drawable, pixel::Pixel, primitives::{Circle, HollowCircle}};
+use crate::{color::Color, draw::Drawable, pixel::Pixel, primitives::{Circle, HollowCircle, Line}};
 
 pub struct Buffer {
     window: Window,
@@ -70,5 +70,9 @@ impl Buffer {
         if !filled {
             self.draw(color, HollowCircle(Circle{center, radius}))
         }
+    }
+
+    pub fn draw_line(&mut self, color: Color, start: Pixel, end: Pixel) {
+        self.draw(color, Line{from: start, to: end})
     }
 }
