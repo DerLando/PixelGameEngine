@@ -5,7 +5,7 @@ use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
 use winit_input_helper::WinitInputHelper;
 
-use crate::{buffer::Buffer};
+use crate::{buffer::Buffer, events::{KeyEvent, MouseEvent}};
 
 
 pub struct PixelGameEngineBuilder<T>
@@ -16,6 +16,8 @@ where T: Sized
     height: u32,
     update_fn: Box<dyn FnMut(&mut T) -> ()>,
     draw_fn: Box<dyn FnMut(&mut Buffer, &T) -> ()>,
+    key_events: Vec<Box<dyn FnMut(&mut T, &KeyEvent)>>,
+    mouse_events: Vec<Box<dyn FnMut(&mut T, &MouseEvent)>>
 }
 
 impl<T> PixelGameEngineBuilder<T>
@@ -28,6 +30,8 @@ where T: Sized
             height: 600,
             update_fn: Box::new(|_| ()),
             draw_fn: Box::new(|_, _| ()),
+            key_events: Vec::new(),
+            mouse_events: Vec::new(),
         }
     }
 
@@ -51,8 +55,18 @@ where T: Sized
         self
     }
 
+    pub fn add_key_listener(mut self, key_listener: impl FnMut(&mut T, &KeyEvent) -> () + 'static) -> Self {
+        self.key_events.push(Box::new(key_listener));
+        self
+    }
+
+    pub fn add_mouse_listener(mut self, mouse_listener: impl FnMut(&mut T, &MouseEvent) -> () + 'static) -> Self {
+        self.mouse_events.push(Box::new(mouse_listener));
+        self
+    }
+
     pub(crate) fn build(self, event_loop: &EventLoop<()>) -> PixelGameEngine<T> {
-        PixelGameEngine::new(self.state, self.width, self.height, self.update_fn, self.draw_fn, event_loop)
+        PixelGameEngine::new(self.state, self.width, self.height, self.update_fn, self.draw_fn, self.key_events, self.mouse_events, event_loop)
     }
 }
 
@@ -64,6 +78,8 @@ T: Sized,
     pub(crate) buffer: Buffer,
     update_fn: Box<dyn FnMut(&mut T) -> ()>,
     draw_fn: Box<dyn FnMut(&mut Buffer, &T) -> ()>,
+    key_events: Vec<Box<dyn FnMut(&mut T, &KeyEvent)>>,
+    mouse_events: Vec<Box<dyn FnMut(&mut T, &MouseEvent)>>
 }
 
 impl<T> PixelGameEngine<T>
@@ -74,6 +90,8 @@ where T: Sized {
         height: u32, 
         update_fn: Box<dyn FnMut(&mut T) -> ()>, 
         draw_fn: Box<dyn FnMut(&mut Buffer, &T) -> ()>,
+        key_events: Vec<Box<dyn FnMut(&mut T, &KeyEvent)>>,
+        mouse_events: Vec<Box<dyn FnMut(&mut T, &MouseEvent)>>,    
         event_loop: &EventLoop<()>
     ) -> Self {
         // initialize logger
@@ -103,6 +121,8 @@ where T: Sized {
             buffer: Buffer::new(window, pixels),
             update_fn,
             draw_fn,
+            key_events,
+            mouse_events
         }
     }
 
@@ -117,6 +137,16 @@ where T: Sized {
         (self.update_fn)(&mut self.state);
 
         self.buffer.window().request_redraw();
+    }
+    
+    pub(crate) fn handle_key_events(&mut self, events: impl Iterator<Item = KeyEvent>) {
+        let handlers = &mut self.key_events;
+
+        for event in events {
+            for handler in handlers.iter_mut() {
+                (handler)(&mut self.state, &event);
+            }
+        }
     }
 }
 

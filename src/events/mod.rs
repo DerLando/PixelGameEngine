@@ -7,8 +7,10 @@ use crate::{engine::{PixelGameEngineBuilder}};
 
 
 mod key_event;
+pub use key_event::KeyEvent;
 
 mod mouse_event;
+pub use mouse_event::MouseEvent;
 
 pub struct EventLoop;
 
@@ -29,14 +31,38 @@ impl EventLoop {
     
             // Handle input events
             if input.update(&event) {
-                // Close events
+                // Close events, those are static for all implementations
                 if input.key_pressed(VirtualKeyCode::Escape) || input.quit() {
                     *control_flow = ControlFlow::Exit;
                     return;
                 }
             }
+
+            // emit and handle key events
+            engine.handle_key_events(emit_key_events(&input));
     
+            // call the engines update function, once per loop
             engine.update();
             })
     }
+}
+
+fn iter_key_codes() -> impl Iterator<Item = VirtualKeyCode> {
+    vec![
+        VirtualKeyCode::W,
+        VirtualKeyCode::A,
+        VirtualKeyCode::S,
+        VirtualKeyCode::D,
+    ].into_iter()
+}
+
+fn emit_key_events(input: &WinitInputHelper) -> impl Iterator<Item = KeyEvent> {
+    let mut events: Vec<KeyEvent> = Vec::new();
+    iter_key_codes().for_each(|k| {
+        if input.key_pressed(k) {events.push(KeyEvent::Pressed(k));};
+        if input.key_held(k) {events.push(KeyEvent::Held(k));};
+        if input.key_released(k) {events.push(KeyEvent::Released(k));};
+    });
+
+    events.into_iter()
 }

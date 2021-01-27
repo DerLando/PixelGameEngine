@@ -1,5 +1,6 @@
 use engine::PixelGameEngineBuilder;
-use pixel_game_engine::{buffer::Buffer, color::DefaultColors, engine, events::EventLoop, pixel::Pixel};
+use pixel_game_engine::{buffer::Buffer, color::DefaultColors, engine, events::{EventLoop, KeyEvent}, pixel::Pixel};
+use winit::event::VirtualKeyCode;
 
 struct State {
     pub position: Pixel,
@@ -40,12 +41,26 @@ fn main() -> ! {
         b.clear(DefaultColors::Black.as_color());
         b.draw_circle(DefaultColors::White.as_color(), s.position, RADIUS, true);
     };
+
+    // key handlers
+    let key_movement = |s: &mut State, e: &KeyEvent| {
+        match e {
+            KeyEvent::Held(k) => match k {
+                VirtualKeyCode::W => s.position = s.position + (0, -1),
+                VirtualKeyCode::S => s.position = s.position + (0, 1),
+                _ => ()
+            },
+            _ => ()
+        }
+    };
     
     // create engine
     let builder =
     PixelGameEngineBuilder::new(state)
         .with_update(update)
-        .with_draw(draw);
+        .with_draw(draw)
+        .add_key_listener(key_movement)
+        ;
 
     EventLoop::build_and_run(builder)
 }
