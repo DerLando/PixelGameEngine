@@ -27,6 +27,7 @@ const PLAYER_WIDTH: u32 = 20;
 const PLAYER_HEIGHT: u32 = 100;
 const PLAYER_OFFSET: u32 = 20;
 const MAX_PLAYER_VELOCITY: f32 = 2.0;
+const MAX_BALL_VELOCITY: u32 = 10;
 
 fn clamp_player_velocity(velocity: (f32, f32)) -> (f32, f32) {
     if velocity.1 >= MAX_PLAYER_VELOCITY {(0.0, MAX_PLAYER_VELOCITY)}
@@ -65,6 +66,19 @@ fn is_player_at_boundary(player: &Player) -> bool {
     else {false}
 }
 
+fn accelerate(velocity: (i32, i32)) -> (i32, i32) {
+    let x;
+    let y;
+    
+    if velocity.0 < 0 {x = velocity.0 - 1;}
+    else {x = velocity.0 + 1;}
+
+    if velocity.1 < 0 {y = velocity.1 - 1;}
+    else {y = velocity.1 + 1;}
+
+    (x, y)
+}
+
 fn main() -> ! {
     // engine state, we will be animating a simple moving ball
     let state = State {
@@ -95,11 +109,14 @@ fn main() -> ! {
         // test player collision
         if left_player_collides(&s.player_left, &s.position) {
             s.velocity = (-s.velocity.0, s.velocity.1);
+            s.velocity = accelerate(s.velocity);
             return;
         }
 
         if right_player_collides(&s.player_right, &s.position) {
             s.velocity = (-s.velocity.0, s.velocity.1);
+            s.velocity = accelerate(s.velocity);
+            return;
         }
 
         // test if a point was won
@@ -110,6 +127,7 @@ fn main() -> ! {
             }
 
             s.position = (WIDTH / 2, HEIGHT / 2).into();
+            s.velocity = (-1, -1);
             return;
         }
 
