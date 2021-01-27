@@ -1,5 +1,5 @@
 use engine::PixelGameEngineBuilder;
-use pixel_game_engine::{buffer::Buffer, engine};
+use pixel_game_engine::{buffer::Buffer, color::DefaultColors, engine};
 use winit::{event::{Event, VirtualKeyCode}, event_loop::{ControlFlow, EventLoop}};
 use winit_input_helper::WinitInputHelper;
 
@@ -9,7 +9,10 @@ fn main() {
     let mut input = WinitInputHelper::new();
 
     // draw override
-    let draw = |b: &mut Buffer, s: &u8| b.clear([((*s as f32 / 255.0).sin() * *s as f32) as u8, 0, *s, 255]);
+    let draw = |b: &mut Buffer, s: &u8| {
+        b.clear([((*s as f32 / 255.0).sin() * *s as f32) as u8, 0, *s, 255]);
+        b.draw_circle(DefaultColors::White.as_color(), (400, 300).into(), 50, false);
+    };
     
     // create engine
     let mut engine =

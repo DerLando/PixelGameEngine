@@ -4,5 +4,8 @@
 pub mod engine;
 pub mod color;
 pub mod buffer;
+pub mod draw;
+pub mod primitives;
+pub mod pixel;
+mod arithmetric;
 
-pub type Pixel = (u32, u32);

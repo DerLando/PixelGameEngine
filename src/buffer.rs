@@ -1,14 +1,14 @@
 use pixels::Pixels;
 use winit::window::Window;
 
-use crate::{Pixel, color::Color};
+use crate::{color::Color, draw::Drawable, pixel::Pixel, primitives::{Circle, HollowCircle}};
 
 pub struct Buffer {
     window: Window,
     pixels: Pixels<Window> 
 }
 
-// initialization and field access
+/// initialization and field access
 impl Buffer {
     pub fn new(window: Window, pixels: Pixels<Window>) -> Self {
         Self {
@@ -32,7 +32,7 @@ impl Buffer {
     /// Converts the given pixel coordinates the the corresponding index
     /// into the raw pixel buffer
     fn pixel_to_index(&self, pixel: Pixel) -> usize {
-        ((self.window.inner_size().width + pixel.0) * 4) as usize
+        ((self.window.inner_size().width * pixel.y() + pixel.x()) * 4) as usize
     }
 
     /// Tries to get the raw pixel buffer at the given pixel position.
@@ -54,6 +54,21 @@ impl Buffer {
     pub fn clear(&mut self, color: Color) {
         for raw_pixel in self.pixels.get_frame().chunks_exact_mut(4) {
             raw_pixel.copy_from_slice(&color)
+        }
+    }
+
+    // TODO: Create a drawable trait and have a generic draw method for it.
+    // Can be used to draw arbitrary user structs
+    pub fn draw(&mut self, color: Color, drawable: impl Drawable) {
+        drawable
+            .pixels()
+            .into_iter()
+            .for_each(|p| self.draw_pixel(p, color))
+    }
+
+    pub fn draw_circle(&mut self, color: Color, center: Pixel, radius: u32, filled: bool) {
+        if !filled {
+            self.draw(color, HollowCircle(Circle{center, radius}))
         }
     }
 }

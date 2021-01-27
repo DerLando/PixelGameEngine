@@ -8,8 +8,7 @@ use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
 use winit_input_helper::WinitInputHelper;
 
-use crate::{buffer::Buffer, color::{Color, DefaultColors}};
-use crate::Pixel;
+use crate::{pixel::Pixel, buffer::Buffer, color::{Color, DefaultColors}};
 
 pub struct PixelGameEngineBuilder<T>
 where T: Sized
