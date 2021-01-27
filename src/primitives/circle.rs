@@ -1,5 +1,7 @@
 use crate::{draw::Drawable, pixel::{Pixel}};
 
+use super::Line;
+
 pub(crate) struct Circle {
     pub center: Pixel,
     pub radius: u32
@@ -26,7 +28,12 @@ fn circle_pixels(circle: &Circle, is_filled: bool) -> Vec<Pixel> {
                 pixels.push(circle.center + (-y, -x));
             }
 
-
+            else {
+                pixels.extend(Line{from: circle.center + (-x, y), to: circle.center + (x, y)}.pixels());
+                pixels.extend(Line{from: circle.center + (-x, -y), to: circle.center + (x, -y)}.pixels());
+                pixels.extend(Line{from: circle.center + (-y, x), to: circle.center + (y, x)}.pixels());
+                pixels.extend(Line{from: circle.center + (-y, -x), to: circle.center + (y, -x)}.pixels());
+            }
 
             // Error correction
             if d < 0 {
@@ -52,5 +59,14 @@ impl Drawable for HollowCircle {
 
     fn pixels(&self) -> Self::IntoIter {
         circle_pixels(&self.0, false).into_iter()
+    }
+}
+
+pub(crate) struct FilledCircle(pub Circle);
+impl Drawable for FilledCircle {
+    type IntoIter = std::vec::IntoIter<Pixel>;
+
+    fn pixels(&self) -> Self::IntoIter {
+        circle_pixels(&self.0, true).into_iter()
     }
 }
