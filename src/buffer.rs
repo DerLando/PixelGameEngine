@@ -1,4 +1,4 @@
-use pixels::Pixels;
+use pixels::{Error, Pixels};
 use winit::window::Window;
 
 use crate::{color::Color, draw::Drawable, pixel::Pixel, primitives::{Circle, FilledCircle, HollowCircle, Line, Rectangle, HollowRectangle, FilledRectangle}, text::Text};
@@ -21,9 +21,8 @@ impl Buffer {
         &self.window
     }
 
-    pub fn render(&mut self) -> () {
-        // TODO: Handle error
-        self.pixels.render();
+    pub fn render(&mut self) -> Result<(), Error> {
+        self.pixels.render()
     }
 }
 

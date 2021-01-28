@@ -1,3 +1,4 @@
+use log::error;
 use winit::{event::{Event, VirtualKeyCode}, event_loop::{ControlFlow}};
 use winit_input_helper::WinitInputHelper;
 
@@ -26,7 +27,14 @@ impl EventLoop {
         // run the winit loop
         event_loop.run( move |event, _, control_flow| {
             if let Event::RedrawRequested(_) = event {
-                engine.draw_frame();
+                if engine
+                    .draw_frame()
+                    .map_err(|e| error!("pixels.render() failed: {}", e))
+                    .is_err()
+                    {
+                        *control_flow = ControlFlow::Exit;
+                        return;
+                    }
             }
     
             // Handle input events

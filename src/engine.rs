@@ -1,4 +1,4 @@
-use pixels::{Pixels, SurfaceTexture};
+use pixels::{Error, Pixels, SurfaceTexture};
 use winit::{dpi::LogicalSize};
 use winit::event_loop::{EventLoop};
 use winit::window::WindowBuilder;
@@ -164,11 +164,11 @@ impl<T> PixelGameEngine<T>
 where T: Sized {
     /// Draw the engine state to a new frame.
     /// The default implementation of this does nothing.
-    pub fn draw_frame(&mut self) {
+    pub fn draw_frame(&mut self) -> Result<(), Error> {
         // draw via draw fn
         (self.draw_fn)(&mut self.buffer, &self.state);
 
         // render pixels buffer
-        self.buffer.render();
+        self.buffer.render()
     }
 }
