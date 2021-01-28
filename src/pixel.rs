@@ -1,12 +1,15 @@
 use std::ops::{Add, Sub};
 
-
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct Pixel(pub(u32, u32));
+pub struct Pixel(pub (u32, u32));
 
 impl Pixel {
-    pub fn x(&self) -> u32 {self.0.0}
-    pub fn y(&self) -> u32 {self.0.1}
+    pub fn x(&self) -> u32 {
+        self.0 .0
+    }
+    pub fn y(&self) -> u32 {
+        self.0 .1
+    }
 }
 
 impl From<(u32, u32)> for Pixel {

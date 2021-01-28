@@ -1,20 +1,25 @@
 use pixels::{Error, Pixels};
 use winit::window::Window;
 
-use crate::{color::Color, draw::Drawable, pixel::Pixel, primitives::{Circle, FilledCircle, HollowCircle, Line, Rectangle, HollowRectangle, FilledRectangle}, text::Text};
+use crate::{
+    color::Color,
+    draw::Drawable,
+    pixel::Pixel,
+    primitives::{
+        Circle, FilledCircle, FilledRectangle, HollowCircle, HollowRectangle, Line, Rectangle,
+    },
+    text::Text,
+};
 
 pub struct Buffer {
     window: Window,
-    pixels: Pixels<Window> 
+    pixels: Pixels<Window>,
 }
 
 /// initialization and field access
 impl Buffer {
     pub fn new(window: Window, pixels: Pixels<Window>) -> Self {
-        Self {
-            window,
-            pixels
-        }
+        Self { window, pixels }
     }
 
     pub fn window(&self) -> &Window {
@@ -67,25 +72,59 @@ impl Buffer {
 
     pub fn draw_circle(&mut self, color: Color, center: Pixel, radius: u32, filled: bool) {
         if !filled {
-            self.draw(color, HollowCircle(Circle{center, radius}))
+            self.draw(color, HollowCircle(Circle { center, radius }))
         } else {
-            self.draw(color, FilledCircle(Circle{center, radius}))
+            self.draw(color, FilledCircle(Circle { center, radius }))
         }
     }
 
     pub fn draw_line(&mut self, color: Color, start: Pixel, end: Pixel) {
-        self.draw(color, Line{from: start, to: end})
+        self.draw(
+            color,
+            Line {
+                from: start,
+                to: end,
+            },
+        )
     }
 
-    pub fn draw_rectangle(&mut self, color: Color, top_left: Pixel, width: u32, height: u32, filled: bool) {
+    pub fn draw_rectangle(
+        &mut self,
+        color: Color,
+        top_left: Pixel,
+        width: u32,
+        height: u32,
+        filled: bool,
+    ) {
         if !filled {
-            self.draw(color, HollowRectangle(Rectangle{top_left, width, height}))
+            self.draw(
+                color,
+                HollowRectangle(Rectangle {
+                    top_left,
+                    width,
+                    height,
+                }),
+            )
         } else {
-            self.draw(color, FilledRectangle(Rectangle{top_left, width, height}))
+            self.draw(
+                color,
+                FilledRectangle(Rectangle {
+                    top_left,
+                    width,
+                    height,
+                }),
+            )
         }
     }
 
     pub fn draw_text(&mut self, color: Color, top_left: Pixel, height: u32, text: &str) {
-        self.draw(color, Text{position: top_left, content: text, height})
+        self.draw(
+            color,
+            Text {
+                position: top_left,
+                content: text,
+                height,
+            },
+        )
     }
 }

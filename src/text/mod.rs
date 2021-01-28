@@ -10,7 +10,7 @@ fn get_font() -> Font<'static> {
 pub struct Text<'a> {
     pub(crate) position: Pixel,
     pub(crate) content: &'a str,
-    pub(crate) height: u32
+    pub(crate) height: u32,
 }
 
 impl<'a> Drawable for Text<'a> {
@@ -19,7 +19,10 @@ impl<'a> Drawable for Text<'a> {
     // https://docs.rs/imageproc/0.22.0/src/imageproc/drawing/text.rs.html#52-70
     fn pixels(&self) -> Self::IntoIter {
         let font = get_font();
-        let scale = Scale{x: self.height as f32, y: self.height as f32};
+        let scale = Scale {
+            x: self.height as f32,
+            y: self.height as f32,
+        };
         let v_metrics = font.v_metrics(scale);
         let offset = point(0.0, v_metrics.ascent);
 
@@ -30,7 +33,9 @@ impl<'a> Drawable for Text<'a> {
             if let Some(bb) = g.pixel_bounding_box() {
                 g.draw(|x, y, z| {
                     // early exit by coverage treshhold
-                    if z < 0.5 {return;}
+                    if z < 0.5 {
+                        return;
+                    }
 
                     let gx = x as i32 + bb.min.x;
                     let gy = y as i32 + bb.min.y;

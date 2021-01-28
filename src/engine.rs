@@ -1,14 +1,16 @@
 use pixels::{Error, Pixels, SurfaceTexture};
-use winit::{dpi::LogicalSize};
-use winit::event_loop::{EventLoop};
+use winit::dpi::LogicalSize;
+use winit::event_loop::EventLoop;
 use winit::window::WindowBuilder;
 
-
-use crate::{buffer::Buffer, events::{KeyEvent, MouseEvent}};
-
+use crate::{
+    buffer::Buffer,
+    events::{KeyEvent, MouseEvent},
+};
 
 pub struct PixelGameEngineBuilder<T>
-where T: Sized
+where
+    T: Sized,
 {
     state: T,
     width: u32,
@@ -16,11 +18,12 @@ where T: Sized
     update_fn: Box<dyn FnMut(&mut T) -> ()>,
     draw_fn: Box<dyn FnMut(&mut Buffer, &T) -> ()>,
     key_events: Vec<Box<dyn FnMut(&mut T, &KeyEvent)>>,
-    mouse_events: Vec<Box<dyn FnMut(&mut T, &MouseEvent)>>
+    mouse_events: Vec<Box<dyn FnMut(&mut T, &MouseEvent)>>,
 }
 
 impl<T> PixelGameEngineBuilder<T>
-where T: Sized
+where
+    T: Sized,
 {
     pub fn new(state: T) -> Self {
         Self {
@@ -44,7 +47,7 @@ where T: Sized
         self
     }
 
-    pub fn with_update(mut self, update_fn : impl FnMut(&mut T) -> () + 'static) -> Self {
+    pub fn with_update(mut self, update_fn: impl FnMut(&mut T) -> () + 'static) -> Self {
         self.update_fn = Box::new(update_fn);
         self
     }
@@ -54,48 +57,65 @@ where T: Sized
         self
     }
 
-    pub fn add_key_listener(mut self, key_listener: impl FnMut(&mut T, &KeyEvent) -> () + 'static) -> Self {
+    pub fn add_key_listener(
+        mut self,
+        key_listener: impl FnMut(&mut T, &KeyEvent) -> () + 'static,
+    ) -> Self {
         self.key_events.push(Box::new(key_listener));
         self
     }
 
-    pub fn add_mouse_listener(mut self, mouse_listener: impl FnMut(&mut T, &MouseEvent) -> () + 'static) -> Self {
+    pub fn add_mouse_listener(
+        mut self,
+        mouse_listener: impl FnMut(&mut T, &MouseEvent) -> () + 'static,
+    ) -> Self {
         self.mouse_events.push(Box::new(mouse_listener));
         self
     }
 
     pub(crate) fn build(self, event_loop: &EventLoop<()>) -> PixelGameEngine<T> {
-        PixelGameEngine::new(self.state, self.width, self.height, self.update_fn, self.draw_fn, self.key_events, self.mouse_events, event_loop)
+        PixelGameEngine::new(
+            self.state,
+            self.width,
+            self.height,
+            self.update_fn,
+            self.draw_fn,
+            self.key_events,
+            self.mouse_events,
+            event_loop,
+        )
     }
 }
 
 pub struct PixelGameEngine<T>
-where 
-T: Sized,
+where
+    T: Sized,
 {
     state: T,
     pub(crate) buffer: Buffer,
     update_fn: Box<dyn FnMut(&mut T) -> ()>,
     draw_fn: Box<dyn FnMut(&mut Buffer, &T) -> ()>,
     key_events: Vec<Box<dyn FnMut(&mut T, &KeyEvent)>>,
-    mouse_events: Vec<Box<dyn FnMut(&mut T, &MouseEvent)>>
+    mouse_events: Vec<Box<dyn FnMut(&mut T, &MouseEvent)>>,
 }
 
 impl<T> PixelGameEngine<T>
-where T: Sized {
+where
+    T: Sized,
+{
     fn new(
         state: T,
-        width: u32, 
-        height: u32, 
-        update_fn: Box<dyn FnMut(&mut T) -> ()>, 
+        width: u32,
+        height: u32,
+        update_fn: Box<dyn FnMut(&mut T) -> ()>,
         draw_fn: Box<dyn FnMut(&mut Buffer, &T) -> ()>,
         key_events: Vec<Box<dyn FnMut(&mut T, &KeyEvent)>>,
-        mouse_events: Vec<Box<dyn FnMut(&mut T, &MouseEvent)>>,    
-        event_loop: &EventLoop<()>
+        mouse_events: Vec<Box<dyn FnMut(&mut T, &MouseEvent)>>,
+        event_loop: &EventLoop<()>,
     ) -> Self {
         // initialize logger
         env_logger::init();
-        
+
         // create the window
         let window = {
             let size = LogicalSize::new(width, height);
@@ -110,7 +130,8 @@ where T: Sized {
         // create the inner pixel buffer
         let pixels = {
             let window_size = window.inner_size();
-            let surface_texture = SurfaceTexture::new(window_size.width, window_size.height, &window);
+            let surface_texture =
+                SurfaceTexture::new(window_size.width, window_size.height, &window);
             Pixels::new(width, height, surface_texture).unwrap()
         };
 
@@ -121,7 +142,7 @@ where T: Sized {
             update_fn,
             draw_fn,
             key_events,
-            mouse_events
+            mouse_events,
         }
     }
 
@@ -137,7 +158,7 @@ where T: Sized {
 
         self.buffer.window().request_redraw();
     }
-    
+
     pub(crate) fn handle_key_events(&mut self, events: impl Iterator<Item = KeyEvent>) {
         let handlers = &mut self.key_events;
 
@@ -161,7 +182,9 @@ where T: Sized {
 
 // Drawing routines
 impl<T> PixelGameEngine<T>
-where T: Sized {
+where
+    T: Sized,
+{
     /// Draw the engine state to a new frame.
     /// The default implementation of this does nothing.
     pub fn draw_frame(&mut self) -> Result<(), Error> {

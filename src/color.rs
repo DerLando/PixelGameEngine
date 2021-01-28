@@ -4,7 +4,7 @@ pub type Color = [u8; 4];
 #[non_exhaustive]
 pub enum DefaultColors {
     Black,
-    White
+    White,
 }
 
 impl DefaultColors {

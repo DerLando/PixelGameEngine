@@ -1,4 +1,4 @@
-use crate::{pixel::Pixel};
+use crate::pixel::Pixel;
 
 pub trait Drawable {
     type IntoIter: IntoIterator<Item = Pixel>;
