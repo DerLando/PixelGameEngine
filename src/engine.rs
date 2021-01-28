@@ -1,9 +1,8 @@
 use pixels::{Pixels, SurfaceTexture};
 use winit::{dpi::LogicalSize};
-use winit::event::{Event, VirtualKeyCode};
-use winit::event_loop::{ControlFlow, EventLoop};
+use winit::event_loop::{EventLoop};
 use winit::window::WindowBuilder;
-use winit_input_helper::WinitInputHelper;
+
 
 use crate::{buffer::Buffer, events::{KeyEvent, MouseEvent}};
 
@@ -141,6 +140,16 @@ where T: Sized {
     
     pub(crate) fn handle_key_events(&mut self, events: impl Iterator<Item = KeyEvent>) {
         let handlers = &mut self.key_events;
+
+        for event in events {
+            for handler in handlers.iter_mut() {
+                (handler)(&mut self.state, &event);
+            }
+        }
+    }
+
+    pub(crate) fn handle_mouse_events(&mut self, events: impl Iterator<Item = MouseEvent>) {
+        let handlers = &mut self.mouse_events;
 
         for event in events {
             for handler in handlers.iter_mut() {

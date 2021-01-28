@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use rusttype::{point, Font, PositionedGlyph, Scale};
 
 use crate::{draw::Drawable, pixel::Pixel};
@@ -55,7 +53,7 @@ mod test {
 
     #[test]
     fn load_font() {
-        let font = get_font();
+        let _font = get_font();
 
         assert!(true);
     }
