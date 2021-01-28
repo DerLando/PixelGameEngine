@@ -1,5 +1,5 @@
 use engine::PixelGameEngineBuilder;
-use pixel_game_engine::{buffer::Buffer, color::DefaultColors, draw::Drawable, engine, events::{EventLoop, KeyEvent}, pixel::Pixel, text::Text};
+use pixel_game_engine::{buffer::Buffer, color::DefaultColors, engine, events::{EventLoop, KeyEvent}, pixel::Pixel};
 use winit::event::VirtualKeyCode;
 
 struct State {
@@ -27,7 +27,6 @@ const PLAYER_WIDTH: u32 = 20;
 const PLAYER_HEIGHT: u32 = 100;
 const PLAYER_OFFSET: u32 = 20;
 const MAX_PLAYER_VELOCITY: f32 = 5.0;
-const MAX_BALL_VELOCITY: u32 = 10;
 
 fn clamp_player_velocity(velocity: (f32, f32)) -> (f32, f32) {
     if velocity.1 >= MAX_PLAYER_VELOCITY {(0.0, MAX_PLAYER_VELOCITY)}

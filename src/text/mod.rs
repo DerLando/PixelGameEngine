@@ -18,6 +18,7 @@ pub struct Text<'a> {
 impl<'a> Drawable for Text<'a> {
     type IntoIter = std::vec::IntoIter<Pixel>;
 
+    // https://docs.rs/imageproc/0.22.0/src/imageproc/drawing/text.rs.html#52-70
     fn pixels(&self) -> Self::IntoIter {
         let font = get_font();
         let scale = Scale{x: self.height as f32, y: self.height as f32};
