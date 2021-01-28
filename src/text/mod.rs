@@ -1,10 +1,13 @@
+use lazy_static::lazy_static;
 use rusttype::{point, Font, PositionedGlyph, Scale};
 
 use crate::{draw::Drawable, pixel::Pixel};
 
-fn get_font() -> Font<'static> {
-    let font_data = include_bytes!("Inter-SemiBold.ttf");
-    Font::try_from_bytes(font_data).unwrap()
+lazy_static! {
+    static ref FONT: Font<'static> = {
+        let font_data = include_bytes!("Inter-SemiBold.ttf");
+        Font::try_from_bytes(font_data).unwrap()
+    };
 }
 
 pub struct Text<'a> {
@@ -18,7 +21,7 @@ impl<'a> Drawable for Text<'a> {
 
     // https://docs.rs/imageproc/0.22.0/src/imageproc/drawing/text.rs.html#52-70
     fn pixels(&self) -> Self::IntoIter {
-        let font = get_font();
+        let font = &FONT;
         let scale = Scale {
             x: self.height as f32,
             y: self.height as f32,
@@ -58,7 +61,7 @@ mod test {
 
     #[test]
     fn load_font() {
-        let _font = get_font();
+        let _font = &FONT;
 
         assert!(true);
     }
